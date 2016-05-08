@@ -3,13 +3,13 @@ var fs = require('fs'),
     path = require('path');
 
 console.log('## Usage: node csv2sql.js <csv-file>');
-var arguments = process.argv;
 
-if (arguments.length == 3) {
-    var csvFile = arguments[2];
+if (process.argv.length === 3) {
+    var csvFile = process.argv[2];
     var firstLine = true;
 
     var content = '';
+    var rows = 0;
     csv.fromPath(csvFile, {headers: true}).on('data', function(data) {
         var columns = Object.getOwnPropertyNames(data);
         if (firstLine) {
@@ -17,11 +17,12 @@ if (arguments.length == 3) {
             firstLine = false;
         }
 
+        rows++;
         content += valuesStatement(columns, data);
-    }).on("end", function() {
+    }).on('end', function() {
         content = content.replace(/\),\n$/, ');');
         fs.writeFileSync('output.sql', content);
-        console.log('## SQL generated successfully, file output.sql created');
+        console.log('## SQL generated successfully (rows: ' + rows + '), created output.sql');
     });
 }
 
