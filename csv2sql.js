@@ -1,4 +1,3 @@
-var util = require('util');
 var fs = require('fs');
 var csv = require('fast-csv');
 
